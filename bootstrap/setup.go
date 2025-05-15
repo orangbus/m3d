@@ -6,6 +6,6 @@ import (
 
 func SetUp() {
 	config.LoadConfig()
-	//SetupDatabase()
+	SetupDatabase()
 	//search.NewSearch()
 }

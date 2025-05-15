@@ -3,20 +3,23 @@ app:
   port: 3000
   url: http://localhost:3000
   debug: true
+  key: admin666
 db:
-  driver: "mysql"
-  host: "home.cc"
+  driver: sqlite
+  host: home.cc
   port: 3306
-  database: "go_cmd"
-  user: "go_cmd"
-  password: "admin666"
-
-redis:
-  host: "127.0.0.1"
-  password: ""
-  db: 0
-
-es:
-  host: http://es.cc
-  username: elastic
+  database: sqlite.db
+  user: root
   password: admin666
+
+proxy:
+  url: https://spider.orangbus.cn?url=
+#redis:
+#  host: "127.0.0.1"
+#  password: ""
+#  db: 0
+#
+#es:
+#  host: http://es.cc
+#  username: elastic
+#  password: admin666

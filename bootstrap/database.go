@@ -9,6 +9,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -27,9 +28,11 @@ func SetupDatabase() {
 	}
 
 	database.Connect(dbConfig)
-	var article models.Articles
-	var video models.Video
-	database.DB.AutoMigrate(&article, &video)
+	var movie models.Movies
+	var movieApi models.MovieApi
+	if err := database.DB.AutoMigrate(&movie, &movieApi); err != nil {
+		log.Printf("表初始化失败：%s", err.Error())
+	}
 }
 
 func getDatabasePath() string {
@@ -37,5 +40,5 @@ func getDatabasePath() string {
 	if err != nil {
 		return "database.sqlite"
 	}
-	return filepath.Join(basePath, "database.sqlite")
+	return filepath.Join(basePath, config.GetString("db.database"))
 }
