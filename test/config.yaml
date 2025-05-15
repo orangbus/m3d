@@ -1,0 +1,21 @@
+app:
+  name: "OrangBus"
+  port: 3000
+
+db:
+  driver: "mysql"
+  host: "home.cc"
+  port: 3306
+  database: "go_cmd"
+  user: "go_cmd"
+  password: "admin666"
+
+redis:
+  host: "127.0.0.1"
+  password: ""
+  db: 0
+
+es:
+  host: http://es.cc
+  username: elastic
+  password: admin666
