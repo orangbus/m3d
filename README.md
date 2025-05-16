@@ -7,6 +7,7 @@ go install github.com/spf13/cobra-cli@latest
 cobra-cli add url
 cobra-cli add file
 cobra-cli add serve
+cobra-cli add timer
 ```
 
 ## 主要功能

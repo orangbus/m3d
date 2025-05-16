@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/orangbus/m3d/app/models"
 	"github.com/orangbus/m3d/app/response/resp"
+	"github.com/orangbus/m3d/app/service/download_service"
 	"github.com/orangbus/m3d/pkg/database"
 	"github.com/orangbus/m3d/pkg/spider"
 	"github.com/spf13/cast"
@@ -101,4 +102,28 @@ func (a *ApiMovie) FavoriteList(c *gin.Context) {
 		return
 	}
 	resp.Data(c, list)
+}
+func (a *ApiMovie) FavoriteDownload(c *gin.Context) {
+	id := cast.ToInt(c.Query("id"))
+	day := cast.ToInt(c.Query("day"))
+	if id == 0 {
+		var favorite models.Favorite
+		if err := database.DB.Where("id =?", id).First(&favorite).Error; err != nil {
+			resp.Error(c, err)
+			return
+		}
+		go download_service.DownloadFavorite(favorite, day)
+	} else {
+		var list []models.Favorite
+		if err := database.DB.Find(&list).Error; err != nil {
+			resp.Error(c, err)
+			return
+		}
+		go func() {
+			for _, item := range list {
+				download_service.DownloadFavorite(item, day)
+			}
+		}()
+	}
+	resp.Success(c, "采集中...")
 }

@@ -7,6 +7,9 @@ import (
 	"github.com/orangbus/m3d/app/models"
 	"github.com/orangbus/m3d/pkg/database"
 	"github.com/orangbus/m3d/pkg/m3u8/dl"
+	"github.com/orangbus/m3d/pkg/spider"
+	"github.com/orangbus/m3d/pkg/utils/movie_utils"
+	"github.com/spf13/cast"
 	"log"
 	"os"
 	"path/filepath"
@@ -127,4 +130,56 @@ func downloadTask(outDir string, d models.Download, number int) (int, error) {
 		return 2, err
 	}
 	return 1, nil
+}
+
+func DownloadFavorite(favorite models.Favorite, day int) {
+	res, err := spider.NewSpider(favorite.ApiUrl).SetHour(day * 24).Get()
+	if err != nil {
+		log.Printf("采集错误:%s", err.Error())
+		return
+	}
+	if res.Total <= 1 {
+		// 解析下载地址：
+		saveDownload(res.List)
+		return
+	}
+
+	// 采集更多
+	for i := 2; i < cast.ToInt(res.Total); i++ {
+		res, err := spider.NewSpider(favorite.ApiUrl).SetPg(i).SetHour(day * 24).Get()
+		if err != nil {
+			log.Printf("采集错误:%s", err.Error())
+			continue
+		}
+		if res.Total <= 1 {
+			// 解析下载地址：
+			saveDownload(res.List)
+		}
+	}
+}
+
+func saveDownload(movieList []models.Movies) {
+	var dwonloadList []models.Download
+	for _, v := range movieList {
+		list := movie_utils.ParseMovieUrlItem(v.VodName, v.VodPlayFrom, v.VodPlayNote, v.VodPlayURL)
+		for _, item := range list {
+			fmt.Println(item.Name, item.Url)
+			dwonloadList = append(dwonloadList, models.Download{
+				ApiId:  1,
+				Name:   item.Name,
+				Url:    item.Url,
+				Status: 0,
+				Proxy:  0,
+				Remark: "",
+				OutDir: "",
+			})
+		}
+	}
+
+	// 保存数据库
+	if len(dwonloadList) > 0 {
+		if err := database.DB.Model(&models.Download{}).Create(&dwonloadList).Error; err != nil {
+			log.Printf("写入数据失败：%s", err.Error())
+		}
+	}
 }

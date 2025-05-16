@@ -1,8 +1,7 @@
 app:
-  name: "OrangBus"
-  port: 3000
+  name: "OrangBus.cn"
   url: http://localhost:3000
-  debug: true
+  debug: false
   key: admin666
 db:
   driver: sqlite
@@ -14,12 +13,3 @@ db:
 
 proxy:
   url: https://spider.orangbus.cn?url=
-#redis:
-#  host: "127.0.0.1"
-#  password: ""
-#  db: 0
-#
-#es:
-#  host: http://es.cc
-#  username: elastic
-#  password: admin666

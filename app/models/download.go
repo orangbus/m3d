@@ -8,5 +8,6 @@ type Download struct {
 	Status int    `json:"status" form:"status"`
 	Proxy  int    `json:"proxy" form:"proxy"`
 	Remark string `json:"remark" form:"remark"`
+	OutDir string `json:"out_dir" form:"out_dir" binding:"required"` // 保存地址，默认：out .时间，api名称_分类
 	TableTime
 }

@@ -25,6 +25,7 @@ func RegisterApiRoutes(r *gin.Engine) {
 		router.GET("movie/detail", movieController.Detail)
 		router.POST("movie/favorite", movieController.Favorite)
 		router.GET("movie/favorite/list", movieController.FavoriteList)
+		router.GET("movie/favorite/download", movieController.FavoriteDownload)
 
 		downloadController := api_download.NewApiDownload()
 		router.GET("download/list", downloadController.List)
