@@ -1,0 +1,9 @@
+services:
+  app:
+    image: ""
+    container_name: "m3d-server"
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config.yml=app/config.yml
+      - ./sqlite.db=app/sqlite.db
