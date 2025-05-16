@@ -2,7 +2,9 @@ package api_movie
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/orangbus/m3d/app/models"
 	"github.com/orangbus/m3d/app/response/resp"
+	"github.com/orangbus/m3d/pkg/database"
 	"github.com/orangbus/m3d/pkg/spider"
 	"github.com/spf13/cast"
 )
@@ -70,4 +72,33 @@ func (a *ApiMovie) Detail(ctx *gin.Context) {
 		return
 	}
 	resp.Data(ctx, res.List[0])
+}
+func (a *ApiMovie) Favorite(ctx *gin.Context) {
+	var param models.Favorite
+	if err := ctx.ShouldBind(&param); err != nil {
+		resp.Fail(ctx, err.Error())
+		return
+	}
+	var favorite models.Favorite
+	if err := database.DB.Where("api_url = ? and type_id = ?", param.ApiUrl, param.TypeId).First(&favorite).Error; err == nil {
+		resp.Fail(ctx, "已收藏")
+		return
+	}
+	if favorite.ID > 0 {
+		resp.Fail(ctx, "已收藏")
+		return
+	}
+	if err := database.DB.Create(&param).Error; err != nil {
+		resp.Fail(ctx, err.Error())
+		return
+	}
+	resp.Success(ctx, "收藏成功")
+}
+func (a *ApiMovie) FavoriteList(c *gin.Context) {
+	var list []models.Favorite
+	if err := database.DB.Model(&models.Favorite{}).Find(&list).Error; err != nil {
+		resp.Error(c, err)
+		return
+	}
+	resp.Data(c, list)
 }

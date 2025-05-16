@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/orangbus/m3d/app/models"
 	"github.com/orangbus/m3d/app/response/resp"
+	"github.com/orangbus/m3d/app/service/download_service"
 	"github.com/orangbus/m3d/pkg/database"
 	"github.com/spf13/cast"
 	"strings"
@@ -81,9 +82,11 @@ func (a *ApiDownload) Clear(c *gin.Context) {
 }
 
 func (a *ApiDownload) Add(ctx *gin.Context) {
-
+	go download_service.Start()
+	resp.Success(ctx, "添加成功")
 }
 
 func (a *ApiDownload) Stop(ctx *gin.Context) {
-
+	download_service.Stop()
+	resp.Success(ctx, "已停止下载")
 }

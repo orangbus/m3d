@@ -2,6 +2,7 @@ package dl
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -31,6 +32,7 @@ type Downloader struct {
 	segLen   int
 
 	result *parse.Result
+	notice chan map[string]any
 }
 
 // NewTask returns a Task instance
@@ -64,15 +66,43 @@ func NewTask(output string, url string) (*Downloader, error) {
 	}
 	d.segLen = len(result.M3u8.Segments)
 	d.queue = genSlice(d.segLen)
+	d.notice = make(chan map[string]any, 100)
 	return d, nil
 }
 
 // Start runs downloader
-func (d *Downloader) Start(concurrency int, name string) error {
+func (d *Downloader) Start(concurrency int, name string, ctx context.Context) error {
 	var wg sync.WaitGroup
 	// struct{} zero size
 	limitChan := make(chan struct{}, concurrency)
+
+	// 监听消息
+	go func() {
+		for {
+			msg, ok := <-d.notice
+			if !ok {
+				break
+			}
+			// 通知前端
+			fmt.Println("通道消息：", msg)
+		}
+	}()
 	for {
+		d.notice <- map[string]any{
+			"msg":    "start download",
+			"finish": atomic.LoadInt32(&d.finish),
+			"total":  d.segLen, "message": fmt.Sprintf("[%s] %d/%d", "downloading", atomic.LoadInt32(&d.finish), d.segLen),
+			"progress": float32(atomic.LoadInt32(&d.finish)) / float32(d.segLen) * 100,
+		}
+
+		select {
+		case <-ctx.Done():
+			close(d.notice)
+			wg.Done()
+			break
+		default:
+
+		}
 		tsIdx, end, err := d.next()
 		if err != nil {
 			if end {

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/orangbus/m3d/pkg/m3u8/dl"
@@ -24,12 +25,13 @@ func getOutDirPath(outDir string) (string, error) {
 }
 
 func startDownload(outDir, url, name string, number int) error {
+	ctx := context.Background()
 	downloader, err := dl.NewTask(outDir, url)
 	if err != nil {
 		return errors.New(fmt.Sprintf("下载任务创建失败:%s", err.Error()))
 	}
 	name = fmt.Sprintf("%s.mp4", name)
-	if err := downloader.Start(number, name); err != nil {
+	if err := downloader.Start(number, name, ctx); err != nil {
 		return errors.New(fmt.Sprintf("下载失败:%s", err.Error()))
 	}
 	return nil
