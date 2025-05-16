@@ -15,8 +15,15 @@ func Success(c *gin.Context, msg ...string) {
 }
 
 // 错误返回
-func Error(c *gin.Context, msg ...string) {
-	message := "success"
+func Error(c *gin.Context, err error) {
+	c.JSON(200, gin.H{
+		"code": 202,
+		"msg":  err.Error(),
+	})
+}
+
+func Fail(c *gin.Context, msg ...string) {
+	message := "error"
 	if len(msg) > 0 {
 		message = msg[0]
 	}

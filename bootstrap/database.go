@@ -30,7 +30,9 @@ func SetupDatabase() {
 	database.Connect(dbConfig)
 	var movie models.Movies
 	var movieApi models.MovieApi
-	if err := database.DB.AutoMigrate(&movie, &movieApi); err != nil {
+	var download models.Download
+	var movieCate models.MovieCate
+	if err := database.DB.AutoMigrate(&movie, &movieApi, &download, &movieCate); err != nil {
 		log.Printf("表初始化失败：%s", err.Error())
 	}
 }

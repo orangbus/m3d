@@ -21,8 +21,8 @@ func RegisterApiRoutes(r *gin.Engine) {
 
 		movieController := api_movie.NewApiMovie()
 		router.GET("movie/list", movieController.List)
-		router.GET("movie/cate", movieController.Store)
-		router.POST("movie/detail", movieController.Delete)
+		router.GET("movie/cate", movieController.Cate)
+		router.GET("movie/detail", movieController.Detail)
 
 		downloadController := api_download.NewApiDownload()
 		router.GET("download/list", downloadController.List)

@@ -3,7 +3,7 @@ package provider
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/orangbus/m3d/app/resp"
+	"github.com/orangbus/m3d/app/response/resp"
 	"github.com/orangbus/m3d/pkg/request"
 	"github.com/spf13/cast"
 	"io"

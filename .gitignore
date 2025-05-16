@@ -23,6 +23,8 @@ go.work
 
 .idea
 images
-tmp
+tmp/
+*.log
+sqlite.db
 
 
