@@ -14,7 +14,7 @@ func RegisterApiRoutes(r *gin.Engine) {
 		apiController := api_index.NewApiIndex()
 		router.GET("index", apiController.Index)
 
-		router.GET("list", apiController.List)
+		router.GET("apiList", apiController.List) // 接口列表
 		router.GET("cate", apiController.Cate)
 		router.POST("store", apiController.Store)
 		router.POST("delete", apiController.Delete)

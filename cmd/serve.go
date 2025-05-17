@@ -4,6 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/orangbus/m3d/bootstrap"
 	"github.com/orangbus/m3d/pkg/config"
@@ -24,7 +25,7 @@ var serveCmd = &cobra.Command{
 		router := gin.New()
 		bootstrap.SetupRouter(router)
 
-		err := router.Run(":3000")
+		err := router.Run(fmt.Sprintf(":%d", config.GetInt("app.port")))
 		if err != nil {
 			log.Printf("服务启动失败:%s\n", err.Error())
 		}

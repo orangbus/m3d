@@ -3,6 +3,7 @@ app:
   url: http://localhost:3000
   debug: false
   key: admin666
+  port: 3002
 db:
   driver: sqlite
   host: home.cc
